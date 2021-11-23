@@ -28,7 +28,7 @@ struct ProductReal: Codable, Identifiable {
     }
 }
 
-struct Product: Codable {
+struct Currencies: Codable {
     var success: Bool
     var base: String
     var date: String
@@ -41,13 +41,13 @@ struct Rating: Codable {
     var count: Int
 }
 
-func apiRequest(url: String, completion: @escaping (Product) -> ()) {
-    Session.default.request(url).responseDecodable(of: Product.self) {
+func apiRequest(url: String, completion: @escaping (Currencies) -> ()) {
+    Session.default.request(url).responseDecodable(of: Currencies.self) {
         response in switch
         response.result {
-        case.success(let product):
-            print(product)
-            completion(product)
+        case.success(let currencies):
+            print(currencies)
+            completion(currencies)
             
         case.failure(let error):
             print(error)
@@ -63,6 +63,21 @@ func apiRequestProduct(url: String, completion: @escaping ([ProductReal]) -> ())
         case.success(let product):
             print(product)
             completion(product)
+            
+        case.failure(let error):
+            print(error)
+        }
+    }
+}
+
+
+func apiRequestCategories(url: String, completion: @escaping ([String]) -> ()) {
+    Session.default.request(url).responseDecodable(of: [String].self) {
+        response in switch
+        response.result {
+        case.success(let categories):
+            print(categories)
+            completion(categories)
             
         case.failure(let error):
             print(error)
