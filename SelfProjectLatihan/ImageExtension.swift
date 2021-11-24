@@ -11,15 +11,6 @@ import Kingfisher
 import SwiftUI
 import Combine
 
-
-extension UIImageView {
-    
-    func setImage(_ imageUrl: String, placeHolder: String) {
-        self.kf.setImage(with: URL(string: imageUrl), placeholder: UIImage(named: placeHolder))
-    }
-}
-
-
 struct AsyncImage<Placeholder: View>: View {
     @StateObject private var loader: ImageLoader
     private let placeholder: Placeholder

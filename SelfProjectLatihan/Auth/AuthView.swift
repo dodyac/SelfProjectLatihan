@@ -23,11 +23,20 @@ struct AccountIcon : View {
 
 
 struct AuthView : View {
-    
     var body: some View {
-        NavigationView {
-            Text("Daftar / Masuk")
-                .navigationBarTitle("Daftar / Masuk")
+        ZStack {
+            TabView {
+                SignIn()
+                    .tabItem {
+                        Image(systemName: "person.crop.circle")
+                        Text("Sign In")
+                    }
+                SignUp()
+                    .tabItem {
+                        Image(systemName: "person.crop.circle.badge.plus")
+                        Text("Sign Up")
+                    }
+            }
         }
     }
 }

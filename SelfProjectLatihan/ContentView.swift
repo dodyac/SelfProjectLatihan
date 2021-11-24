@@ -49,7 +49,7 @@ struct ContentView: View {
         if showAll {
             url = "https://fakestoreapi.com/products"
         } else {
-            url = "https://fakestoreapi.com/products/category/\(currentCategory)"
+            url = "https://fakestoreapi.com/products/category/\(currentCategory.replacingOccurrences(of: " ", with: "%20"))"
         }
         apiRequestProduct(url: url) { products in
             var tempList = [ProductReal]()
@@ -85,10 +85,12 @@ struct ContentView: View {
     
     var body: some View {
         NavigationView {
+        
             if isLoading {
-                ProgressView()
-                    .progressViewStyle(CircularProgressViewStyle(tint: .blue))
-                    .scaleEffect(3)
+                GeometryReader { geometry in
+                    LoaderView()
+                        .position(x: geometry.size.width / 2, y: geometry.size.height / 2)
+                }.background(Color.black.opacity(0.45).edgesIgnoringSafeArea(.all))
             }
             VStack {
                 ScrollView(.horizontal, showsIndicators: false) {
@@ -144,10 +146,9 @@ struct ContentView: View {
                 ScrollView {
                     LazyVGrid(columns: gridProduct, spacing: 20) {
                         ForEach(productList) {
-                            row in VStack(alignment: .leading, spacing: 10) {
-                                NavigationLink(destination: DetailProductView(namaProduk: row.title)) {
-                                    ProductView(data: row, jumlahKeranjang: globalData)
-                                }
+                            row in NavigationLink(destination: ProductDetail(data: row, jumlahKeranjang: globalData,
+                                                                             productLists: productList)) {
+                                ProductView(data: row, jumlahKeranjang: globalData)
                             }
                         }
                     }
@@ -155,7 +156,14 @@ struct ContentView: View {
             }
             .navigationBarTitle("iProducts")
             .navigationBarItems(trailing:
-            HStack(spacing: 10){
+            HStack(spacing: 10) {
+                Button(action: {
+                    print("image")
+                }) {
+                    let sortBy: String = "asc"
+//                    Text(sortBy)
+                    Image(systemName: "arrow.up.arrow.down.circle.fill")
+                }
                 NavigationLink(destination: DetailView(globalData: globalData)) {
                     cartView(jumlahKeranjang: globalData)
                 }
@@ -236,25 +244,6 @@ struct DetailView : View {
     }
 }
 
-
-struct DetailProductView : View {
-    var namaProduk: String
-    var body: some View {
-        NavigationView {
-            Text("Detail Produk")
-                .navigationBarTitle(namaProduk)
-                .navigationBarItems(trailing:
-                HStack(spacing: 10){
-                    Button(action: {
-                        print("image")
-                    }) {
-                        Image(systemName: "person.fill")
-                    }
-                })
-        }
-    }
-}
-
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
@@ -281,88 +270,6 @@ struct cartView : View {
         }
 
     }
-}
-
-struct ProductView : View {
-    let data: ProductReal
-    @ObservedObject var jumlahKeranjang: GlobalObject
-    @State var animate = false
-    var body: some View {
-        VStack(alignment: .leading) {
-            ZStack(alignment: .topTrailing) {
-                AsyncImage(url: URL(string: self.data.image)!,
-                           placeholder: {
-//                    ZStack {
-//                        Circle()
-//                            .trim(from: 0, to: 0.7)
-//                            .stroke(
-//                                AngularGradient(gradient: .init(colors: [Color.gray, Color.gray.opacity(0.5)]), center: .center), style: StrokeStyle(lineWidth: 6, lineCap: .round)
-//                            )
-//                            .rotationEffect(Angle(degrees: animate ? 360 : 0))
-//                            .animation(Animation.linear(duration: 0.7).repeatForever(autoreverses: false))
-//                    }.onAppear {
-//                        self.animate.toggle()
-//                    }.padding(75)
-                    Text("Loading")
-                },
-                           image: {
-                    Image(uiImage: $0).resizable()
-                })
-                    .aspectRatio(contentMode: .fill)
-                    .frame(width: 200, height: 200)
-                    .clipped()
-                Button(action: {
-                    print("OK")
-                }) {
-                    Image(systemName: "heart")
-                        .padding()
-                        .foregroundColor(.red)
-                }
-            }
-            
-            Text(self.data.title)
-                .font(.body)
-                .bold()
-                .padding(.leading)
-                .padding(.trailing)
-                .lineLimit(2)
-                .multilineTextAlignment(TextAlignment.leading)
-            
-            Text("Rp.\(self.data.price)")
-                .font(.body)
-                .bold()
-                .foregroundColor(.green)
-                .padding(.leading)
-                .padding(.trailing)
-            
-            Text(self.data.description)
-                .font(.caption)
-                .padding(.top, 2)
-                .padding(.leading)
-                .padding(.trailing)
-                .lineLimit(3)
-                .multilineTextAlignment(TextAlignment.leading)
-            
-            HStack {
-                HStack {
-                    ForEach(0 ..< Int(self.data.rating.rate)) {
-                        items in
-                            Image(systemName: "star.fill")
-                            .foregroundColor(.yellow)
-                            .frame(width: 10, height: 10)
-                    }
-                    Text("(\(self.data.rating.count))")
-                        .font(.caption)
-                }
-            }
-            .padding(.leading)
-            .padding(.trailing)
-            .padding(.top, 5)
-            
-            tambahKeranjang(keranjang: jumlahKeranjang)
-        }
-        .background(Color.gray.opacity(0.10))
-        .cornerRadius(15)    }
 }
 
 struct tambahKeranjang : View {

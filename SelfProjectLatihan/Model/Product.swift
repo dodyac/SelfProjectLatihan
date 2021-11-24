@@ -71,6 +71,21 @@ func apiRequestProduct(url: String, completion: @escaping ([ProductReal]) -> ())
 }
 
 
+func apiRequestProductById(url: String, completion: @escaping (ProductReal) -> ()) {
+    Session.default.request(url).responseDecodable(of: ProductReal.self) {
+        response in switch
+        response.result {
+        case.success(let product):
+            print(product)
+            completion(product)
+            
+        case.failure(let error):
+            print(error)
+        }
+    }
+}
+
+
 func apiRequestCategories(url: String, completion: @escaping ([String]) -> ()) {
     Session.default.request(url).responseDecodable(of: [String].self) {
         response in switch
