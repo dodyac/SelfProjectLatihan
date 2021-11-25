@@ -13,8 +13,7 @@ struct ProductDetail : View {
     @State var data: ProductReal
     @State var confirmationShown = false
     
-    @ObservedObject var jumlahKeranjang: GlobalObject
-    @State var productLists = [ProductReal]()
+    @ObservedObject var globalData: GlobalObject
 //    func makeRequestProductById() {
 //        apiRequestProduct(url: "https://fakestoreapi.com/products/\(idProduct)") { products in
 //            product.self = product
@@ -82,18 +81,18 @@ struct ProductDetail : View {
                 .padding(.trailing)
                 .padding(.top, 5)
                 
-                tambahKeranjang(keranjang: jumlahKeranjang)
+                tambahKeranjang(keranjang: self.globalData)
                 
                 HStack {
-                    
-                    Button("Update") {
-                        
+                    NavigationLink(destination: ProductEdit(product: data, globalData: globalData)) {
+                        Text("Update")
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .foregroundColor(.white)
+                            .background(.blue)
+                            .cornerRadius(10)
                     }
                     .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(.blue)
-                    .foregroundColor(.white)
-                    .cornerRadius(10)
                     
                     Button("Delete") {
                         confirmationShown = true
@@ -106,11 +105,11 @@ struct ProductDetail : View {
                     .confirmationDialog("Are you sure want to delete \(self.data.title)?", isPresented: $confirmationShown,
                                         titleVisibility: .visible) {
                         Button("Yes", role: .destructive) {
-                            let index = self.productLists.firstIndex(where: {
+                            let index = self.globalData.productList.firstIndex(where: {
                                 $0.id == self.data.id
                             })
                             if let index = index {
-                                self.productLists.remove(at: index)
+                                self.globalData.productList.remove(at: index)
                             }
                         }
                         Button("Cancel", role: .cancel) {

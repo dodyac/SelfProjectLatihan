@@ -12,10 +12,11 @@ struct ContentView: View {
     @State var base = "USD"
     @State var currencyList = [String]()
     @FocusState private var inputIsFocused: Bool
-    @State var productList = [ProductReal]()
+    @ObservedObject var globalData = GlobalObject()
     @State var categoryList = [String]()
     @State var currentCategory = "All"
     @State var isLoading = false
+    @State var isAsc = false
     
     func makeRequest(showAll: Bool, currencies: [String] = ["USD", "IDR"]) {
         apiRequest(url: "https://api.exchangerate.host/latest?base=\(base)&amount=\(input)") { currency in
@@ -57,7 +58,7 @@ struct ContentView: View {
             for product in products {
                 tempList.append(product)
             }
-            productList.self = tempList
+            self.globalData.productList = tempList
             isLoading = false
         }
     }
@@ -75,8 +76,6 @@ struct ContentView: View {
             categoryList.self = categories
         }
     }
-
-    @ObservedObject var globalData = GlobalObject()
     
     let gridProduct = [
         GridItem(.flexible()),
@@ -85,7 +84,6 @@ struct ContentView: View {
     
     var body: some View {
         NavigationView {
-        
             if isLoading {
                 GeometryReader { geometry in
                     LoaderView()
@@ -145,9 +143,8 @@ struct ContentView: View {
                 }
                 ScrollView {
                     LazyVGrid(columns: gridProduct, spacing: 20) {
-                        ForEach(productList) {
-                            row in NavigationLink(destination: ProductDetail(data: row, jumlahKeranjang: globalData,
-                                                                             productLists: productList)) {
+                        ForEach(self.globalData.productList) {
+                            row in NavigationLink(destination: ProductDetail(data: row, globalData: globalData)) {
                                 ProductView(data: row, jumlahKeranjang: globalData)
                             }
                         }
@@ -158,10 +155,25 @@ struct ContentView: View {
             .navigationBarItems(trailing:
             HStack(spacing: 10) {
                 Button(action: {
-                    print("image")
-                }) {
-                    let sortBy: String = "asc"
-//                    Text(sortBy)
+                    self.isAsc.toggle()
+//                    let sort = if isAsc {
+//                        $0.title.lowercased() < $1.title.lowercased()
+//                    } else {
+//                        $0.title.lowercased() > $1.title.lowercased()
+//                    }
+//                    self.globalData.productList.sort(by:) {
+//                        $0.title.lowercased() < $1.title.lowercased()
+//                    }
+                    if isAsc {
+                        self.globalData.productList.sort(by:) {
+                            $0.title.lowercased() < $1.title.lowercased()
+                        }
+                    } else {
+                        self.globalData.productList.sort(by:) {
+                            $0.title.lowercased() > $1.title.lowercased()
+                        }
+                    }
+                }){
                     Image(systemName: "arrow.up.arrow.down.circle.fill")
                 }
                 NavigationLink(destination: DetailView(globalData: globalData)) {

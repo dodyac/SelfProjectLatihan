@@ -11,5 +11,5 @@ import Foundation
 
 class GlobalObject: ObservableObject {
     @Published var jumlah : Int = 0
-    
+    @Published var productList = [ProductReal]()
 }
