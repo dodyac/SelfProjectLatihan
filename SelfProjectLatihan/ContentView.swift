@@ -145,7 +145,7 @@ struct ContentView: View {
                     LazyVGrid(columns: gridProduct, spacing: 20) {
                         ForEach(self.globalData.productList) {
                             row in NavigationLink(destination: ProductDetail(data: row, globalData: globalData)) {
-                                ProductView(data: row, jumlahKeranjang: globalData)
+                                ProductView(data: row, globalData: globalData)
                             }
                         }
                     }
@@ -156,14 +156,6 @@ struct ContentView: View {
             HStack(spacing: 10) {
                 Button(action: {
                     self.isAsc.toggle()
-//                    let sort = if isAsc {
-//                        $0.title.lowercased() < $1.title.lowercased()
-//                    } else {
-//                        $0.title.lowercased() > $1.title.lowercased()
-//                    }
-//                    self.globalData.productList.sort(by:) {
-//                        $0.title.lowercased() < $1.title.lowercased()
-//                    }
                     if isAsc {
                         self.globalData.productList.sort(by:) {
                             $0.title.lowercased() < $1.title.lowercased()
@@ -177,7 +169,7 @@ struct ContentView: View {
                     Image(systemName: "arrow.up.arrow.down.circle.fill")
                 }
                 NavigationLink(destination: DetailView(globalData: globalData)) {
-                    cartView(jumlahKeranjang: globalData)
+                    cartView(globalData: globalData)
                 }
                 NavigationLink(destination: AuthView()) {
                     AccountIcon()
@@ -237,21 +229,32 @@ struct ContentView: View {
 
 struct DetailView : View {
     
+    
+    let gridProduct = [
+        GridItem(.flexible()),
+        GridItem(.flexible()),
+    ]
+    
     @ObservedObject var globalData : GlobalObject
     
     var body: some View {
         NavigationView {
-            Text("Daftar Keranjang")
-                .navigationBarTitle("Cart")
-                .navigationBarItems(trailing:
-                HStack(spacing: 10){
-                    Button(action: {
-                        print("image")
-                    }) {
-                        Image(systemName: "person.fill")
+            ScrollView {
+                LazyVGrid(columns: gridProduct, spacing: 20) {
+                    ForEach(self.globalData.cart) {
+                        row in NavigationLink(destination: ProductDetail(data: row, globalData: globalData)) {
+                            ProductView(data: row, globalData: globalData, isDeleteCartVisible: true)
+                        }
                     }
-                    cartView(jumlahKeranjang: globalData)
-                })
+                }
+            }
+            .navigationBarItems(trailing:
+            HStack(spacing: 10){
+                NavigationLink(destination: AuthView()) {
+                    AccountIcon()
+                }
+                cartView(globalData: globalData)
+            })
         }
     }
 }
@@ -263,15 +266,14 @@ struct ContentView_Previews: PreviewProvider {
 }
 
 struct cartView : View {
-//    @Binding var jumlah: Int
-    @ObservedObject var jumlahKeranjang : GlobalObject
+    @ObservedObject var globalData : GlobalObject
     
     var body: some View {
         ZStack {
             Image(systemName: "cart.fill")
                 .resizable()
                 .frame(width: 20, height: 20)
-            Text(String(self.jumlahKeranjang.jumlah))
+            Text(String(self.globalData.cart.count))
                 .foregroundColor(.white)
                 .frame(width: 10, height: 10)
                 .font(.body)
@@ -285,12 +287,12 @@ struct cartView : View {
 }
 
 struct tambahKeranjang : View {
-//    @Binding var jumlah: Int
-    @ObservedObject var keranjang : GlobalObject
+    @State var product: ProductReal
+    @ObservedObject var globalData : GlobalObject
     
     var body: some View {
         Button(action: {
-            self.keranjang.jumlah += 1
+            self.globalData.cart.insert(product, at: self.globalData.cart.count)
         }){
             HStack{
                 Spacer()

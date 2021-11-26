@@ -9,8 +9,10 @@ import Foundation
 import SwiftUI
 struct ProductView : View {
     let data: ProductReal
-    @ObservedObject var jumlahKeranjang: GlobalObject
+    @ObservedObject var globalData: GlobalObject
+    @State var isDeleteCartVisible = false
     @State var animate = false
+    @State var confirmationShown = false
     var body: some View {
         VStack(alignment: .leading) {
             ZStack(alignment: .topTrailing) {
@@ -73,7 +75,33 @@ struct ProductView : View {
             .padding(.trailing)
             .padding(.top, 5)
             
-            tambahKeranjang(keranjang: jumlahKeranjang)
+            if self.isDeleteCartVisible {
+                Button("Remove from cart") {
+                    confirmationShown = true
+                }
+                .frame(maxWidth: .infinity)
+                .padding()
+                .background(.red)
+                .foregroundColor(.white)
+                .cornerRadius(10)
+                .padding()
+                .confirmationDialog("Are you sure want to remove \(self.data.title) from cart?", isPresented: $confirmationShown,
+                                    titleVisibility: .visible) {
+                    Button("Yes", role: .destructive) {
+                        let index = self.globalData.cart.firstIndex(where: {
+                            $0.id == self.data.id
+                        })
+                        if let index = index {
+                            self.globalData.cart.remove(at: index)
+                        }
+                    }
+                    Button("Cancel", role: .cancel) {
+                        
+                    }
+                }
+            } else {
+                tambahKeranjang(product: data, globalData: globalData)
+            }
         }
         .background(Color.gray.opacity(0.10))
         .cornerRadius(15)

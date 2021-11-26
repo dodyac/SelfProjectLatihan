@@ -81,7 +81,7 @@ struct ProductDetail : View {
                 .padding(.trailing)
                 .padding(.top, 5)
                 
-                tambahKeranjang(keranjang: self.globalData)
+                tambahKeranjang(product: data, globalData: self.globalData)
                 
                 HStack {
                     NavigationLink(destination: ProductEdit(product: data, globalData: globalData)) {
