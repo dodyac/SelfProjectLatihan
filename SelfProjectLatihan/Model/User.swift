@@ -7,6 +7,7 @@
 
 import Foundation
 import Alamofire
+import UIKit
 
 struct User: Codable, Identifiable {
     var id: Int
@@ -46,26 +47,39 @@ struct GeoLocation: Codable {
     var long: Double
 }
 
-struct TokenSignIn: Codable {
-    var token: String
-    
-    init(token: String) {
-        self.token = token
-    }
+struct TokenSignIn: Decodable {
+    let token: String
 }
 
 func apiRequestSignIn(url: String, username: String, password: String, completion: @escaping (TokenSignIn) -> ()) {
     let parameter: Parameters = ["username": username, "password": password]
-    Session.default.request(url, method: .post, parameters: parameter, encoding: JSONEncoding.default)
+    Session.default.request(url, method: .post, parameters: parameter, encoding: JSONEncoding.default, headers: nil)
         .responseDecodable(of: TokenSignIn.self) {
             response in switch
             response.result {
                 case.success(let result):
                     print(result)
                     completion(result)
-            
+
                 case.failure(let error):
                     print(error)
             }
     }
 }
+
+
+//func apiRequestSignUp(url: String, user: User, completion: @escaping (User) -> ()) {
+//    let parameter: Parameters = ["username": username, "password": password]
+//    Session.default.request(url, method: .post, parameters: parameter, encoding: JSONEncoding.default)
+//        .responseDecodable(of: TokenSignIn.self) {
+//            response in switch
+//            response.result {
+//                case.success(let result):
+//                    print(result)
+//                    completion(result)
+//
+//                case.failure(let error):
+//                    print(error)
+//            }
+//    }
+//}

@@ -18,8 +18,8 @@ struct SignIn : View {
     
     func makeRequestSignIn() {
         apiRequestSignIn(url: "https://fakestoreapi.com/auth/login", username: username, password: password) { token in
-            print("Tokennya adalah \(token)")
-            isLoading = false
+                print("Tokennya adalah \(token)")
+                isLoading = false
         }
     }
     
