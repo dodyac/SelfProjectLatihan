@@ -25,29 +25,27 @@ struct AccountIcon : View {
 struct AuthView : View {
     
     @State var confirmationShown = false
-    @State var isLogged = false
+    @ObservedObject var globalData = GlobalObject()
     var body: some View {
         ZStack {
-            if isLogged {
+            if globalData.isLogin {
                 VStack {
                     Form {
                         Section() {
-                            NavigationLink(destination: SignIn()){
-                                HStack {
-                                    Image(systemName: "person.crop.circle")
-                                        .resizable()
-                                        .frame(width: 50, height: 50)
-                                        .clipShape(Circle())
-                                                
-                                    //Nama dan status
-                                    VStack(alignment: .leading) {
-                                        Text("Dody Ahmad").font(.headline)
-                                        Text("Software Developer").font(.caption)
-                                    }
+                            HStack {
+                                Image(systemName: "person.crop.circle")
+                                    .resizable()
+                                    .frame(width: 50, height: 50)
+                                    .clipShape(Circle())
+                                            
+                                //Nama dan status
+                                VStack(alignment: .leading) {
+                                    Text("Ahmad Dody C").font(.headline)
+                                    Text("Software Developer").font(.caption)
                                 }
-                                .padding(.top, 10)
-                                .padding(.bottom, 10)
                             }
+                            .padding(.top, 10)
+                            .padding(.bottom, 10)
                         }
                     }
                     
@@ -63,7 +61,7 @@ struct AuthView : View {
                     .confirmationDialog("Are you sure want sign out?", isPresented: $confirmationShown,
                                         titleVisibility: .visible) {
                         Button("Yes", role: .destructive) {
-
+                            globalData.isLogin = false
                         }
                         Button("Cancel", role: .cancel) {
                             
@@ -72,7 +70,7 @@ struct AuthView : View {
                 }
             } else {
                 TabView {
-                    SignIn()
+                    SignIn(globalData: globalData)
                         .tabItem {
                             Image(systemName: "person.crop.circle")
                             Text("Sign In")

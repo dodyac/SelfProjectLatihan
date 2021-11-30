@@ -19,6 +19,7 @@
 		8E675710274B72830076E2B2 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E67570F274B72830076E2B2 /* ContentView.swift */; };
 		8E675712274B72860076E2B2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8E675711274B72860076E2B2 /* Assets.xcassets */; };
 		8E675715274B72860076E2B2 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8E675714274B72860076E2B2 /* Preview Assets.xcassets */; };
+		8EB568E6275621B200D433F9 /* AlertToast in Frameworks */ = {isa = PBXBuildFile; productRef = 8EB568E5275621B200D433F9 /* AlertToast */; };
 		8ED82CC2274CCB77003D5229 /* SignIn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ED82CC1274CCB77003D5229 /* SignIn.swift */; };
 		8ED82CC4274CCB84003D5229 /* SignUp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ED82CC3274CCB84003D5229 /* SignUp.swift */; };
 		8ED9D7DF274F83D500439A54 /* ProductEdit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ED9D7DE274F83D500439A54 /* ProductEdit.swift */; };
@@ -50,6 +51,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8EB568E6275621B200D433F9 /* AlertToast in Frameworks */,
 				8E115CA0274B9CBB00E579AD /* Kingfisher in Frameworks */,
 				8E115C96274B7DB600E579AD /* Alamofire in Frameworks */,
 			);
@@ -147,6 +149,7 @@
 			packageProductDependencies = (
 				8E115C95274B7DB600E579AD /* Alamofire */,
 				8E115C9F274B9CBB00E579AD /* Kingfisher */,
+				8EB568E5275621B200D433F9 /* AlertToast */,
 			);
 			productName = SelfProjectLatihan;
 			productReference = 8E67570A274B72830076E2B2 /* SelfProjectLatihan.app */;
@@ -179,6 +182,7 @@
 			packageReferences = (
 				8E115C94274B7DB600E579AD /* XCRemoteSwiftPackageReference "Alamofire" */,
 				8E115C9E274B9CBB00E579AD /* XCRemoteSwiftPackageReference "Kingfisher" */,
+				8EB568E4275621B200D433F9 /* XCRemoteSwiftPackageReference "AlertToast" */,
 			);
 			productRefGroup = 8E67570B274B72830076E2B2 /* Products */;
 			projectDirPath = "";
@@ -439,6 +443,14 @@
 				minimumVersion = 7.0.0;
 			};
 		};
+		8EB568E4275621B200D433F9 /* XCRemoteSwiftPackageReference "AlertToast" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/elai950/AlertToast.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -451,6 +463,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 8E115C9E274B9CBB00E579AD /* XCRemoteSwiftPackageReference "Kingfisher" */;
 			productName = Kingfisher;
+		};
+		8EB568E5275621B200D433F9 /* AlertToast */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8EB568E4275621B200D433F9 /* XCRemoteSwiftPackageReference "AlertToast" */;
+			productName = AlertToast;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

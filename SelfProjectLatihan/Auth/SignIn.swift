@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import AlertToast
 
 struct SignIn : View {
     
@@ -15,11 +16,23 @@ struct SignIn : View {
     @State var isLoading = false
     @State var usernameEmpty = false
     @State var passwordEmpty = false
+    @State var showToast = false
+    @State var isValid = true
+    
+    
+    @ObservedObject var globalData : GlobalObject
     
     func makeRequestSignIn() {
-        apiRequestSignIn(url: "https://fakestoreapi.com/auth/login", username: username, password: password) { token in
-                print("Tokennya adalah \(token)")
-                isLoading = false
+        apiRequestSignIn(url: "https://fakestoreapi.com/auth/login", username: username.lowercased(), password: password) { result in
+            if result.status == "Error" {
+                isValid = false
+                globalData.isLogin = false
+            } else {
+                isValid = true
+                globalData.isLogin = true
+            }
+            showToast = true
+            isLoading = false
         }
     }
     
@@ -95,6 +108,14 @@ struct SignIn : View {
                 }
             }
             .padding(.all, 20)
+        }.toast(isPresenting: $showToast) {
+            var alert: AlertToast
+            if isValid {
+                alert = AlertToast(type: .complete(.green), title: "Successfully login to your account")
+            } else {
+                alert = AlertToast(type: .error(.red), title: "username or password is wrong")
+            }
+            return alert
         }
     }
 }

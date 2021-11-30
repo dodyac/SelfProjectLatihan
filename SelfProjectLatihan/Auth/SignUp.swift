@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import AlertToast
 
 struct SignUp : View {
     var body: some View {
@@ -42,23 +43,23 @@ struct FormBoxSignUp: View {
     @State var passwordEmpty = false
     @State var mailEmpty = false
     
-    
+    @State var showToast = false
     @State var isLoading = false
     
-    @State var geoLocation = GeoLocation(lat: 2828282, long: 57.333)
-    
-//    @State var address = Address(city: $city, street: $street, number: Int(number), zipcode: $zipcode, geolocation: $geoLocation)
-//
-//    @State var name = Name(firstname: $fname, lastname: $lname)
-//
-//    @State var user = User(id: 1, email: $mail, username: $username, password: $password, name: $name, address: $address, phone: $phone)
-//
-//    func makeRequestSignUp() {
-//        apiRequestSignUp(url: "https://fakestoreapi.com/users", user: user) { result in
+
+    func makeRequestSignUp(user: UserPost) {
+//        apiRequestSignUpFix(userPost: user) { result in
 //            print("Result adalah \(result)")
 //            isLoading = false
+//
 //        }
-//    }
+        apiRequestSignUp(url: "https://fakestoreapi.com/users", user: user) { result in
+            print("Result adalah \(result)")
+            isLoading = false
+            showToast = true
+            
+        }
+    }
     
     var body: some View {
         ZStack {
@@ -126,6 +127,7 @@ struct FormBoxSignUp: View {
                     Text("Number")
                         .bold()
                     TextField("Number...", text: $number)
+                        .keyboardType(.numberPad)
                         .padding(20)
                         .background(Color.gray.opacity(0.1))
                         .cornerRadius(10)
@@ -133,6 +135,7 @@ struct FormBoxSignUp: View {
                     Text("Zip Code")
                         .bold()
                     TextField("Zip Code...", text: $zipcode)
+                        .keyboardType(.numberPad)
                         .padding(20)
                         .background(Color.gray.opacity(0.1))
                         .cornerRadius(10)
@@ -141,6 +144,7 @@ struct FormBoxSignUp: View {
                 Text("Phone")
                     .bold()
                 TextField("Phone...", text: $phone)
+                    .keyboardType(.numberPad)
                     .padding(20)
                     .background(Color.gray.opacity(0.1))
                     .cornerRadius(10)
@@ -166,8 +170,16 @@ struct FormBoxSignUp: View {
                     }
                     
                     if !usernameEmpty && !passwordEmpty {
-//                        makeRequestSignUp()
-//                        isLoading = true
+                        let geoLocation = GeoLocation(lat: "2828282", long: "57.333")
+                        
+                        let address = Address(city: city, street: street, number: number, zipcode: zipcode, geolocation: geoLocation)
+                        
+                        let name = Name(firstname: fname, lastname: lname)
+                        
+                        let user = UserPost(id: 1, email: mail, username: username, password: password, name: name, address: address, phone: phone)
+                        
+                        makeRequestSignUp(user: user)
+                        isLoading = true
                     }
                 }){
                     Text("Sign Up")
@@ -197,6 +209,8 @@ struct FormBoxSignUp: View {
                     }
                 }
             }
+        }.toast(isPresenting: $showToast) {
+            AlertToast(type: .complete(.green), title: "Successfully register your account")
         }
     }
 }
